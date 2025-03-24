@@ -6,7 +6,6 @@ import { Container, Typography, Card, CardContent } from "@mui/material";
 const AppointmentDetails = () => {
   const { id } = useParams();
 
-  // Ensure _id comparison is correctly done
   const appointment = useSelector((state) =>
     state.appointments?.appointments?.find(
       (apt) => String(apt._id) === String(id)

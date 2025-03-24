@@ -40,7 +40,7 @@ const TimeSlotTable = () => {
   };
 
   const handleEdit = (appointment) => {
-    setAppointmentData(appointment); // ✅ Correct
+    setAppointmentData(appointment);
     setOpenForm(true);
   };
   

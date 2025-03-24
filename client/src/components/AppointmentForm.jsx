@@ -12,7 +12,7 @@ const AppointmentForm = ({ selectedTimeSlot, onClose, appointmentData }) => {
     firstName: appointmentData?.firstName || "",
     lastName: appointmentData?.lastName || "",
     phoneNumber: appointmentData?.phoneNumber || "",
-    userId: appointmentData?.userId || "", // Get from logged-in user
+    userId: appointmentData?.userId || "", 
   });
 
   useEffect(() => {
