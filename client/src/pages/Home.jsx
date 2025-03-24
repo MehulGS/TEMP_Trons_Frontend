@@ -9,7 +9,7 @@ const Home = () => {
       <Typography variant="h4" sx={{ my: 3 }}>
         Appointment Scheduler
       </Typography>
-      <AppointmentForm />
+      {/* <AppointmentForm /> */}
       <TimeSlotList />
     </Container>
   );

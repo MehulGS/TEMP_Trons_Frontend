@@ -5,15 +5,19 @@ import { Container, Typography, Card, CardContent } from "@mui/material";
 
 const AppointmentDetails = () => {
   const { id } = useParams();
+
+  // Ensure _id comparison is correctly done
   const appointment = useSelector((state) =>
-    state.appointment.appointments.find((apt) => apt.id === id)
+    state.appointments?.appointments?.find(
+      (apt) => String(apt._id) === String(id)
+    )
   );
 
   if (!appointment) {
     return (
       <Container>
         <Typography variant="h6" color="error">
-          Appointment not found.
+          Appointment not found or still loading...
         </Typography>
       </Container>
     );
@@ -24,9 +28,18 @@ const AppointmentDetails = () => {
       <Card sx={{ my: 3, p: 2 }}>
         <CardContent>
           <Typography variant="h5">Appointment Details</Typography>
-          <Typography variant="body1">Date: {appointment.date}</Typography>
-          <Typography variant="body1">Time: {appointment.time}</Typography>
-          <Typography variant="body1">Patient: {appointment.patient}</Typography>
+          <hr />
+          <Typography variant="h6">
+            Patient: {appointment.firstName} {appointment.lastName}
+          </Typography>
+          <Typography variant="body1">Time: {appointment.timeSlot}</Typography>
+          <Typography variant="body1">
+            Phone Number: {appointment.phoneNumber}
+          </Typography>
+          <Typography variant="body1">
+            Booking:{" "}
+            {appointment.isBooked=== "True" ? "No" : "Yes"}
+          </Typography>
         </CardContent>
       </Card>
     </Container>

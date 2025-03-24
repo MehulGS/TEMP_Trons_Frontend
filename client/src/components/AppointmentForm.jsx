@@ -1,19 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { bookAppointment } from "../redux/slices/appointmentSlice";
-import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import { bookAppointment, editAppointment } from "../redux/slices/appointmentSlice";
+import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 
-const AppointmentForm = () => {
+const AppointmentForm = ({ selectedTimeSlot, onClose, appointmentData }) => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.appointments);
 
   const [formData, setFormData] = useState({
-    timeSlot: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    userId: "", // Get from logged-in user
+    timeSlot: selectedTimeSlot,
+    firstName: appointmentData?.firstName || "",
+    lastName: appointmentData?.lastName || "",
+    phoneNumber: appointmentData?.phoneNumber || "",
+    userId: appointmentData?.userId || "", // Get from logged-in user
   });
+
+  useEffect(() => {
+    if (appointmentData) {
+      setFormData({
+        timeSlot: appointmentData?.timeSlot || selectedTimeSlot, 
+        firstName: appointmentData?.firstName || "",
+        lastName: appointmentData?.lastName || "",
+        phoneNumber: appointmentData?.phoneNumber || "",
+        userId: appointmentData?.userId || "", 
+      });
+    }
+  }, [appointmentData, selectedTimeSlot]);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,20 +34,62 @@ const AppointmentForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(bookAppointment(formData));
+    if (appointmentData) {
+      dispatch(editAppointment({ timeSlot: formData.timeSlot, newData: formData }));
+    } else {
+      dispatch(bookAppointment(formData));
+    }
+    onClose();
   };
+  
 
   return (
-    <Box sx={{ width: 400, mx: "auto", mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
-      <Typography variant="h5" mb={2}>Book an Appointment</Typography>
+    <Box sx={{ width: 400, mx: "auto", p: 3 }}>
+      <Typography variant="h5" mb={2}>
+        {appointmentData ? "Edit Appointment" : "Book an Appointment"}
+      </Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={handleSubmit}>
-        <TextField fullWidth margin="normal" label="Time Slot" name="timeSlot" onChange={handleChange} required />
-        <TextField fullWidth margin="normal" label="First Name" name="firstName" onChange={handleChange} />
-        <TextField fullWidth margin="normal" label="Last Name" name="lastName" onChange={handleChange} />
-        <TextField fullWidth margin="normal" label="Phone Number" name="phoneNumber" onChange={handleChange} required />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Time Slot"
+          name="timeSlot"
+          value={formData.timeSlot}
+          disabled
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="First Name"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Last Name"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Phone Number"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          required
+        />
         <Button fullWidth type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? "Booking..." : "Book Appointment"}
+          {loading ? "Saving..." : appointmentData ? "Update Appointment" : "Book Appointment"}
+        </Button>
+        <Button fullWidth variant="outlined" color="secondary" onClick={onClose} sx={{ mt: 1 }}>
+          Cancel
         </Button>
       </form>
     </Box>
